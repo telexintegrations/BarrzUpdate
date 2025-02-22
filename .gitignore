@@ -1,0 +1,10 @@
+.vscode
+*obj
+*Properties
+*bin
+*publish
+*.http
+*.sln
+*.zip
+v*.0
+
