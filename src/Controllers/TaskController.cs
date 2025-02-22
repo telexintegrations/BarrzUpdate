@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using src.Models;
+using src.Models.Request;
 using src.Repository.Interface;
 
 namespace src.TaskController
@@ -28,18 +29,14 @@ namespace src.TaskController
             return Ok(configSettings);
         }
 
-        [HttpGet("GetLatestBarrz")]
-        public async Task<ActionResult> GetLatestBarrz()
-        {
-            var response = await _telex.TelexReport();
-            return Ok(response);            
-        }
-
         [HttpPost("/tick")]
-        public async Task<ActionResult> BingTelex()
+        public async Task<ActionResult> BingTelex(TickRequest req)
         {
-            var response = await _telex.BingTelex();
-            return Ok(response);
+            var response = await _telex.BingTelex(req);
+            //TODO:: add validation
+            return StatusCode(202, new {
+                status = "accepted"
+            });
         }
     }
 }

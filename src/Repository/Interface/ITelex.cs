@@ -1,4 +1,5 @@
 using src.Models;
+using src.Models.Request;
 using src.Models.Response;
 
 namespace src.Repository.Interface{
@@ -6,9 +7,7 @@ namespace src.Repository.Interface{
     {
         Task<string> GetToken();
         TelexConfig GetTelexConfiguration();
-        Task<TelexResponse> TelexReport();
-        Task<string> BingTelex();
-        //get playlist
-        //post to telex
+        Task<TelexResponse> TelexReport(TickRequest request);
+        Task<string> BingTelex(TickRequest request);
     }
 }

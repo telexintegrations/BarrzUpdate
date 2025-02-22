@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using src.Models;
+using src.Models.Request;
 using src.Models.Response;
 using src.Repository.Interface;
 
@@ -67,7 +68,7 @@ namespace src.Repository.Implmentations{
             }            
         }
 
-        public async Task<TelexResponse> TelexReport()
+        public async Task<TelexResponse> TelexReport(TickRequest request)
         {
             var genrateToken = await GetToken();
             if(_inMemoryDb.FirstOrDefault() == null)
@@ -80,7 +81,7 @@ namespace src.Repository.Implmentations{
                 if(string.IsNullOrEmpty(baseUrl))
                 return new TelexResponse();
 
-                var response = await GetBarrz(baseUrl, _inMemoryDb.FirstOrDefault()!);
+                var response = await GetBarrz(baseUrl, _inMemoryDb.FirstOrDefault()!, request);
                 return response;
 
             }catch(Exception ex)
@@ -90,9 +91,10 @@ namespace src.Repository.Implmentations{
             }
         }
 
-        public async Task<string> BingTelex()
+        public async Task<string> BingTelex(TickRequest req)
         {
-            var report = await TelexReport();
+            WriteToFile($"{req.Return_url} ::: {req.Channel_id} ::: {req.Settings[0].Label}");
+            var report = await TelexReport(req);
 
             if(report is null)
             return "Couldn't retrieve report";
@@ -101,7 +103,7 @@ namespace src.Repository.Implmentations{
                 var content = new StringContent(_json, Encoding.UTF8, "application/json");
                 var client = new HttpClient();
 
-                var clientResponse = await client.PostAsync(_config["TelexIntegration:data:target_url"], content);
+                var clientResponse = await client.PostAsync(req.Return_url, content);
                 return await clientResponse.Content.ReadAsStringAsync();
 
             }catch(Exception ex)
@@ -111,7 +113,7 @@ namespace src.Repository.Implmentations{
             }
         }
 
-        private async Task<TelexResponse> GetBarrz(string baseUrl, string token)
+        private async Task<TelexResponse> GetBarrz(string baseUrl, string token, TickRequest request)
         {
             try{
                 var client = new HttpClient();
@@ -152,14 +154,24 @@ namespace src.Repository.Implmentations{
                     count ++;
                     // Thread.Sleep(1000);
                 }
-
-                string formattedString = string.Join("/n", response.Select(item => $"{item.Artist} - {item.AlbumName}"));                  
+                
                 string items = string.Join("\n", response.Select(item => 
-                        $"{string.Join(", ", item.Artist)} - {item.AlbumName}"
-                    ));                
+                    $"🎵 {string.Join(", ", item.Artist)} - {item.AlbumName}"
+                )); 
+
+                string formattedResponse = $"""
+                    🎶 Latest Music Releases (Powered by Spotify) 🎶
+                    📅 Updated {DateTime.UtcNow.ToString("HH:mm")} UTC 
+
+                    {items}
+
+                    ... and many more! 🎧  
+
+                    ✨ Stay tuned for more updates!  
+                    """;               
 
                 TelexResponse telexResponse  = new(){
-                    message = items,
+                    message = formattedResponse,
                     username = "Devteam",
                     event_name = "barrzupdate",
                     status = "success"
@@ -171,6 +183,32 @@ namespace src.Repository.Implmentations{
             {
                 Console.WriteLine(ex.Message);
                 return new TelexResponse();
+            }
+        }
+
+        public static void WriteToFile(string Message)
+        {
+            string logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            if(!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+            
+            string filepath = Path.Combine(logDirectory, "log.txt");
+
+            if (!File.Exists(filepath))
+            {
+                using (StreamWriter sw = File.CreateText(filepath))
+                {
+                    sw.WriteLine(DateTime.Now + " :: " + Message);
+                }
+            }
+            else
+            {
+                using (StreamWriter sw = File.AppendText(filepath))
+                {
+                    sw.WriteLine(DateTime.Now + " :: " + Message);
+                }
             }
         }
     }

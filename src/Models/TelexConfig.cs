@@ -13,7 +13,7 @@ namespace src.Models{
         public string? Integration_category{get; set;}
         public List<string>? Key_features{get; set;}
         public string? Author{get; set;}
-        public List<Settings>? Settings{get; set;}
+        public List<CommonModel>? Settings{get; set;}
         public string? Target_url{get; set;}
         public string? Tick_url{get; set;}
     }
@@ -29,12 +29,5 @@ namespace src.Models{
         public string? App_logo{get; set;}
         public string? App_url{get; set;}
         public string? Background_color{get; set;}
-    }
-
-    public class Settings{
-        public string? Label{get; set;}
-        public string? Type{get; set;}
-        public string? Required{get; set;}
-        public string? Default{get; set;}
     }
 }
