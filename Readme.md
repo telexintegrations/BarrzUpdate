@@ -77,6 +77,8 @@ GET /GetLatestBarrz
 **Endpoint:**
 ```
 POST /tick
+
+- sample url : https://hng12.bsite.net/tick
 ```
 **Sample Request Body:**
 ```json
