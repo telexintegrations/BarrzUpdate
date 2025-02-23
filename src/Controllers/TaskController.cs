@@ -32,7 +32,16 @@ namespace src.TaskController
         [HttpPost("/tick")]
         public async Task<ActionResult> BingTelex(TickRequest req)
         {
+            if(string.IsNullOrEmpty(req.Channel_id) || string.IsNullOrEmpty(req.Return_url))
+            {
+                return StatusCode(400, new {message = "Channel id or return url cannot be null or empty"});
+            }          
+
             var response = await _telex.BingTelex(req);
+            if(!response.Equals("success"))
+            {
+                return BadRequest(response);
+            }
             //TODO:: add validation
             return StatusCode(202, new {
                 status = "accepted"

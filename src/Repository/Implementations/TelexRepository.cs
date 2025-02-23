@@ -104,7 +104,12 @@ namespace src.Repository.Implmentations{
                 var client = new HttpClient();
 
                 var clientResponse = await client.PostAsync(req.Return_url, content);
-                return await clientResponse.Content.ReadAsStringAsync();
+                var tr = await clientResponse.Content.ReadAsStringAsync();
+                if(!clientResponse.IsSuccessStatusCode)
+                {
+                    return await clientResponse.Content.ReadAsStringAsync();
+                }
+                return "success";
 
             }catch(Exception ex)
             {
