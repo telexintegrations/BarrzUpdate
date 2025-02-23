@@ -81,14 +81,14 @@ POST /tick
 **Request Body:**
 ```json
 {
-  "channel_id": "string",
-  "return_url": "string",
+  "channel_id": "01952b42-efee-711d-bf7e-314d1942b740",
+  "return_url": "https://ping.telex.im/v1/webhooks/01952b42-efee-711d-bf7e-314d1942b740",
   "settings" : [
     {
-      "label" : "string",
-      "type" : "string",
-      "required" : "bool",
-      "default" : "string"
+      "label" : "interval",
+      "type" : "text",
+      "required" : true,
+      "default" : "0 8 * * 1-6"
     }
   ]
 }
