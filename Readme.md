@@ -78,7 +78,7 @@ GET /GetLatestBarrz
 ```
 POST /tick
 ```
-**Request Body:**
+**Sample Request Body:**
 ```json
 {
   "channel_id": "01952b42-efee-711d-bf7e-314d1942b740",
