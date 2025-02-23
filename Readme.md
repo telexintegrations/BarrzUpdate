@@ -54,7 +54,7 @@ GET /integration.json
 **Response:**
 ```json
 {
-  "data"{}
+  "data":{}
 }
 ```
 
@@ -81,16 +81,25 @@ POST /tick
 **Request Body:**
 ```json
 {
-  "message": "New music updates received from Telex."
+  "channel_id": "string",
+  "return_url": "string",
+  "settings" : [
+    {
+      "label" : "string",
+      "type" : "string",
+      "required" : "bool",
+      "default" : "string"
+    }
+  ]
 }
 ```
 **Response:**
 ```json
 {
-  "status": "Message processed"
+  "status": "Accepted"
 }
 ```
-**Status Code:** `200`
+**Status Code:** `202`
 
 ## License
 This project is open-source and available under the MIT License.
